@@ -31,7 +31,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			_logger = logger;
 			_mapper = mapper;
 			_response = new();
-		}
+        }
 
 		[HttpGet]
 		[Authorize]
@@ -43,7 +43,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			try
 			{
 				_logger.Log("Get all numbered villas", "");
-				_response.Result = _mapper.Map<List<VillaNumberDTO>>(await _villaNumberRepository.GetAllAsync());
+				_response.Result = _mapper.Map<List<VillaNumberDTO>>(await _villaNumberRepository.GetAllAsync(includeProperties:"Villa"));
 				_response.HttpStatusCode = HttpStatusCode.OK;
 				_response.IsSuccess = true;
 				return Ok(_response);
@@ -73,7 +73,7 @@ namespace MagicVilla_VillaAPI.Controllers
 					_response.HttpStatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(_response);
 				}
-				var villa = await _villaNumberRepository.GetOneAsync(v => v.VillaNo == no);
+				var villa = await _villaNumberRepository.GetOneAsync(v => v.VillaNo == no, includeProperties: "Villa");
 				if (villa == null)
 				{
 					_response.HttpStatusCode = HttpStatusCode.NotFound;
@@ -109,13 +109,13 @@ namespace MagicVilla_VillaAPI.Controllers
 				}
 				if (await _villaNumberRepository.GetOneAsync(v => v.VillaNo == villaCreate.VillaNo) != null)
 				{
-					ModelState.AddModelError("VillaError", "VillaNumber already exists");
+					ModelState.AddModelError("ErrorMessages", "VillaNumber already exists");
 					_response.HttpStatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(ModelState);
 				}
-				if (await _villaRepository.GetOneAsync(v => v.Id == villaCreate.VillaID) != null)
+				if (await _villaRepository.GetOneAsync(v => v.Id == villaCreate.VillaID) == null)
 				{
-					ModelState.AddModelError("VillaError", "Villa already exists");
+					ModelState.AddModelError("ErrorMessages", "Villa is invalid");
 					_response.HttpStatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(ModelState);
 				}
@@ -179,14 +179,14 @@ namespace MagicVilla_VillaAPI.Controllers
 		{
 			try
 			{
-				if ((villaUpdateData == null) || (no == villaUpdateData.VillaNo))
+				if ((villaUpdateData == null) || (no != villaUpdateData.VillaNo))
 				{
 					_response.HttpStatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(_response);
 				}
-				if (await _villaRepository.GetOneAsync(v => v.Id == villaUpdateData.VillaID) != null)
+				if (await _villaRepository.GetOneAsync(v => v.Id == villaUpdateData.VillaID) == null)
 				{
-					ModelState.AddModelError("VillaError", "Villa already exists");
+					ModelState.AddModelError("ErrorMessages", "Villa already exists");
 					_response.HttpStatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(ModelState);
 				}

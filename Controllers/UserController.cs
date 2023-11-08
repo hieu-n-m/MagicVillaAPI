@@ -4,6 +4,7 @@ using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
@@ -19,6 +20,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			_response = new();
 		}
 		[HttpPost("login")]
+		[AllowAnonymous]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<ApiResponse>> Login([FromBody] LoginRequestDTO loginRequest)
@@ -39,6 +41,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			return Ok(_response);
 		}
 		[HttpPost("register")]
+		[AllowAnonymous]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public async Task<ActionResult<ApiResponse>> Register([FromBody] RegisterationRequestDTO registerationRequest)

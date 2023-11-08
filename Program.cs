@@ -91,7 +91,7 @@ builder.Services.AddSwaggerGen(option =>
 	});
 });
 
-builder.Services.AddSingleton<ILogging, Logging>();	
+builder.Services.AddTransient<ILogging, Logging>();	
 
 var app = builder.Build();
 

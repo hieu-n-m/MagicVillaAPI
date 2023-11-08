@@ -37,7 +37,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			_logger = logger;
 			_mapper = mapper;
 			_response = new();
-		}
+        }
 
 		[HttpGet] // hey, this is Get endpoint
 		[Authorize]
@@ -49,7 +49,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			try
 			{
 				_logger.Log("Get all Villas", "");
-				_response.Result = _mapper.Map<List<VillaDTO>>(await _villaRepository.GetAllAsync());
+                _response.Result = _mapper.Map<List<VillaDTO>>(await _villaRepository.GetAllAsync());
 				_response.HttpStatusCode = HttpStatusCode.OK;
 				_response.IsSuccess = true;
 				return Ok(_response);
@@ -195,7 +195,7 @@ namespace MagicVilla_VillaAPI.Controllers
 		{
 			try
 			{
-				if ((villaUpdateData == null) || (id == villaUpdateData.Id))
+				if ((villaUpdateData == null) || (id != villaUpdateData.Id))
 				{
 					_response.HttpStatusCode = HttpStatusCode.BadRequest;
 					return BadRequest(_response);
